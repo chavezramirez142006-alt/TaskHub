@@ -1,0 +1,113 @@
+<div class="tareas-lista-container">
+  <!-- Filtros combinables: Búsqueda por título y filtro por curso (TH-01) -->
+  <div class="filter-box">
+    <div class="search-input">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        placeholder="Buscar tarea por título (ej. PWA, subredes, postgresql)..."
+        [ngModel]="tareaService.filtroTitulo()"
+        (ngModelChange)="tareaService.setFiltroTitulo($event)"
+      />
+      @if (tareaService.filtroTitulo()) {
+        <button class="btn-clear" (click)="tareaService.setFiltroTitulo('')">✕</button>
+      }
+    </div>
+
+    <div class="filter-row">
+      <div class="course-select-group">
+        <label for="cursoSelect">Filtrar por Curso:</label>
+        <select
+          id="cursoSelect"
+          [ngModel]="tareaService.filtroCurso()"
+          (ngModelChange)="tareaService.setFiltroCurso($event)">
+          @for (c of tareaService.cursosDisponibles(); track c) {
+            <option [value]="c">{{ c === 'TODOS' ? '— Todos los cursos —' : c }}</option>
+          }
+        </select>
+      </div>
+
+      <button class="btn-reset" (click)="tareaService.limpiarFiltros()">
+        ↺ Limpiar filtros
+      </button>
+    </div>
+
+    <div class="filter-stats">
+      Encontradas: <strong>{{ tareaService.tareasFiltradas().length }}</strong> tareas coincidentes
+    </div>
+  </div>
+
+  <!-- Grilla de Tareas Académicas -->
+  <div class="tasks-grid">
+    @for (t of tareaService.tareasFiltradas(); track t.id) {
+      <div class="task-card">
+        <div class="card-top">
+          <span class="course-tag">{{ t.curso }}</span>
+          <span class="academic-badge" [class.badge-pending]="t.estadoAcademico === 'Pendiente'" [class.badge-done]="t.estadoAcademico === 'Entregado'">
+            {{ t.estadoAcademico }}
+          </span>
+        </div>
+
+        <h3 class="task-title">{{ t.titulo }}</h3>
+        <p class="task-desc">{{ t.descripcion }}</p>
+
+        <div class="task-meta">
+          <span>📅 <strong>Entrega:</strong> {{ t.fechaEntrega }}</span>
+          <span>👨‍🏫 <strong>Docente:</strong> {{ t.instructor }}</span>
+        </div>
+
+        <div class="task-actions">
+          <button class="btn-info" (click)="verDetalle(t)">
+            📄 Ver Detalle
+          </button>
+          <button class="btn-select-task" (click)="seleccionarParaEntregar(t)">
+            ✍️ Seleccionar para Entrega
+          </button>
+        </div>
+      </div>
+    } @empty {
+      <div class="empty-tasks">
+        <div class="empty-icon">📂</div>
+        <h4>No se encontraron tareas</h4>
+        <p>No existen coincidencias para el título y curso especificados.</p>
+        <button class="btn-reset-filters" (click)="tareaService.limpiarFiltros()">Restablecer filtros</button>
+      </div>
+    }
+  </div>
+
+  <!-- Modal Detalle de Tarea -->
+  @if (tareaDetalle; as td) {
+    <div class="modal-backdrop" (click)="cerrarDetalle()">
+      <div class="modal-box" (click)="$event.stopPropagation()">
+        <div class="modal-head">
+          <h3>Detalle de la Asignación Académica</h3>
+          <button class="btn-x" (click)="cerrarDetalle()">✕</button>
+        </div>
+        <div class="modal-content">
+          <span class="course-tag">{{ td.curso }}</span>
+          <h4>{{ td.titulo }}</h4>
+          <p><strong>Descripción:</strong> {{ td.descripcion }}</p>
+          <p><strong>Fecha límite:</strong> {{ td.fechaEntrega }}</p>
+          <p><strong>Docente a cargo:</strong> {{ td.instructor }}</p>
+
+          @if (td.archivosAdjuntos && td.archivosAdjuntos.length > 0) {
+            <div class="attachments-section">
+              <strong>Archivos adjuntos por el docente:</strong>
+              <ul>
+                @for (arch of td.archivosAdjuntos; track arch) {
+                  <li>📎 {{ arch }}</li>
+                }
+              </ul>
+            </div>
+          }
+        </div>
+        <div class="modal-foot">
+          <button class="btn-select-modal" (click)="seleccionarParaEntregar(td); cerrarDetalle()">
+            ✍️ Redactar Entrega para esta tarea
+          </button>
+          <button class="btn-close-modal" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

@@ -1,0 +1,121 @@
+<div class="taskhub-app-container">
+  <!-- Cabecera Institucional SENATI (Mockup página 10) -->
+  <header class="taskhub-top-header">
+    <div class="top-row">
+      <div class="brand-left">
+        <div class="senati-logo-badge">SENATI</div>
+        <div class="brand-titles">
+          <h1>TaskHub PWA</h1>
+          <span class="motto">Organiza · Colabora · Avanza</span>
+        </div>
+      </div>
+
+      <div class="brand-right">
+        <div class="pwa-badge">
+          <span class="pwa-icon">📲</span>
+          <div class="pwa-text">
+            <strong>PWA</strong>
+            <span>Aplicación web progresiva</span>
+          </div>
+        </div>
+
+        <div class="slogan-badge">
+          <span>Tu talento también forma parte del futuro</span>
+        </div>
+
+        <div class="conn-indicator" [class.online]="conectividadService.isOnline()" [class.offline]="!conectividadService.isOnline()">
+          <span class="dot"></span>
+          <span>{{ conectividadService.isOnline() ? 'En Línea (Online)' : 'Modo Offline (Local)' }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Saludo al Estudiante y Tarjetas Métricas (Mockup pág 10) -->
+    <div class="welcome-box">
+      <div class="greeting-text">
+        <h2>Hola, Estudiante SENATI</h2>
+        <p>Aquí tienes el estado de tus tareas académicas y tus entregas guardadas localmente.</p>
+      </div>
+
+      <div class="metrics-container">
+        <div class="metric-card card-blue">
+          <span class="metric-val">5</span>
+          <span class="metric-desc">PENDIENTES</span>
+        </div>
+        <div class="metric-card card-green">
+          <span class="metric-val">3</span>
+          <span class="metric-desc">EN PROCESO</span>
+        </div>
+        <div class="metric-card card-purple">
+          <span class="metric-val">8</span>
+          <span class="metric-desc">TOTAL CURSOS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Offline Honesto (Mockup pág 10: "Modo offline (entregas guardadas)") -->
+    @if (!conectividadService.isOnline()) {
+      <div class="offline-banner">
+        <span class="icon">📡</span>
+        <div class="txt">
+          <strong>Sin conexión a internet:</strong>
+          <span>Tu entrega se guardará localmente en IndexedDB y se mantendrá en espera hasta que recuperes la conexión.</span>
+        </div>
+        <button class="btn-goto-bandeja" (click)="setTab('bandeja')">
+          Ver entregas guardadas →
+        </button>
+      </div>
+    }
+
+    <!-- Tabs de Navegación -->
+    <nav class="taskhub-tabs-nav">
+      <button
+        class="tab-btn"
+        [class.active]="tabActiva() === 'tareas'"
+        (click)="setTab('tareas')">
+        <span class="tab-ico">📚</span>
+        <span>Tareas Disponibles</span>
+      </button>
+
+      <button
+        class="tab-btn"
+        [class.active]="tabActiva() === 'formulario'"
+        (click)="setTab('formulario')">
+        <span class="tab-ico">✍️</span>
+        <span>Formulario de Entrega</span>
+        @if (tareaService.tareaSeleccionada()) {
+          <span class="indicator-dot" title="Tarea seleccionada">●</span>
+        }
+      </button>
+
+      <button
+        class="tab-btn"
+        [class.active]="tabActiva() === 'bandeja'"
+        (click)="setTab('bandeja')">
+        <span class="tab-ico">📥</span>
+        <span>Mis Entregas Locales</span>
+      </button>
+    </nav>
+  </header>
+
+  <!-- Contenido de la Sección Activa -->
+  <main class="taskhub-main-body">
+    @switch (tabActiva()) {
+      @case ('tareas') {
+        <app-taskhub-tareas-lista></app-taskhub-tareas-lista>
+      }
+      @case ('formulario') {
+        <app-taskhub-formulario-entrega></app-taskhub-formulario-entrega>
+      }
+      @case ('bandeja') {
+        <app-taskhub-bandeja-entregas></app-taskhub-bandeja-entregas>
+      }
+    }
+  </main>
+
+  <!-- Footer SENATI -->
+  <footer class="taskhub-footer">
+    <p>SENATI TaskHub PWA · Proyecto 2 Individual · Angular 19 · Service Worker · IndexedDB</p>
+    <p class="foot-sub">Escuela de Tecnologías de la Información | Instructor: Jorge Luque Chambi</p>
+  </footer>
+</div>

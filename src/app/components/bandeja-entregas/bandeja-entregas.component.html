@@ -1,0 +1,156 @@
+<div class="bandeja-container">
+  <!-- Cabecera y Contador de Pendientes (TH-05) -->
+  <div class="bandeja-header">
+    <div class="header-info">
+      <h2>📥 Mis Entregas Locales (IndexedDB)</h2>
+      <p class="subtitle">Bandeja de entregas persistidas en el cliente. Conservadas tras recargar el navegador.</p>
+    </div>
+
+    <div class="header-actions">
+      <div class="pendientes-pill">
+        <span class="pill-number">{{ totalPendientes() }}</span>
+        <span class="pill-text">Pendientes por sincronizar</span>
+      </div>
+
+      <button class="btn-refresh" (click)="recargarBandeja()" [disabled]="cargando()">
+        🔄 Recargar
+      </button>
+    </div>
+  </div>
+
+  <!-- Barra de Sincronización Honesta (TH-06) -->
+  <div class="sync-panel" [class.offline]="!conectividadService.isOnline()">
+    <div class="sync-left">
+      <span class="sync-dot"></span>
+      <span class="sync-status-text">
+        {{ conectividadService.isOnline() ? '🟢 Con conexión a internet' : '🔴 Modo Offline' }}
+      </span>
+    </div>
+
+    <button
+      class="btn-trigger-sync"
+      [disabled]="intentandoSync()"
+      (click)="reintentarSincronizacion()">
+      {{ intentandoSync() ? 'Comprobando conexión...' : '⚡ Reintentar Sincronización' }}
+    </button>
+  </div>
+
+  @if (mensajeSync()) {
+    <div class="alert alert-sync">
+      <span class="alert-icon">ℹ️</span>
+      <p>{{ mensajeSync() }}</p>
+    </div>
+  }
+
+  @if (errorMsg()) {
+    <div class="alert alert-danger">
+      ⚠️ {{ errorMsg() }}
+    </div>
+  }
+
+  <!-- Lista de Entregas -->
+  @if (cargando()) {
+    <div class="loading-state">
+      <p>Cargando entregas desde IndexedDB (SENATITaskHubDB > entregas)...</p>
+    </div>
+  } @else if (entregas().length === 0) {
+    <div class="empty-state">
+      <div class="empty-icon">📂</div>
+      <h3>No hay entregas locales registradas</h3>
+      <p>Cuando envíes un formulario de entrega, se listará aquí con fecha, comentario y estado PENDIENTE.</p>
+    </div>
+  } @else {
+    <div class="entregas-grid">
+      @for (e of entregas(); track e.id) {
+        <div class="entrega-card">
+          <div class="card-top">
+            <span class="tag-course">{{ e.curso }}</span>
+            <span class="badge badge-pending">{{ e.estadoSincronizacion }}</span>
+          </div>
+
+          <h3 class="entrega-task-title">{{ e.tituloTarea }}</h3>
+
+          <div class="comment-quote">
+            <span class="quote-mark">“</span>
+            <p>{{ e.comentario }}</p>
+          </div>
+
+          <div class="card-meta">
+            <span>📅 {{ e.fechaRegistro | date:'dd/MM/yyyy HH:mm:ss' }}</span>
+            <span>📎 {{ e.nombreArchivo || 'evidencia.pdf' }}</span>
+          </div>
+
+          <div class="card-actions">
+            <button class="btn-detail" (click)="verDetalle(e)">
+              🔍 Detalle
+            </button>
+            <button class="btn-delete" (click)="solicitarEliminacion(e)">
+              🗑️ Eliminar
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+
+  <!-- TH-07: Modal de Confirmación de Eliminación (Cancelar conserva; confirmar elimina) -->
+  @if (entregaParaEliminar(); as del) {
+    <div class="modal-backdrop">
+      <div class="modal-card">
+        <div class="modal-top">
+          <h3>⚠️ Confirmar Eliminación (TH-07)</h3>
+        </div>
+        <div class="modal-body">
+          <p>¿Estás seguro de que deseas eliminar permanentemente la entrega local para la tarea:</p>
+          <div class="task-to-delete">
+            <strong>"{{ del.tituloTarea }}"</strong> ({{ del.curso }})
+          </div>
+          <p class="warning-text">Esta acción borrará el registro de IndexedDB y no se puede deshacer.</p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cancelarEliminacion()">
+            ✕ Cancelar (Conservar entrega)
+          </button>
+          <button class="btn-danger" (click)="confirmarEliminacion()">
+            ✓ Confirmar (Eliminar de IndexedDB)
+          </button>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- Modal de Detalle de Entrega -->
+  @if (entregaParaDetalle(); as view) {
+    <div class="modal-backdrop" (click)="cerrarDetalle()">
+      <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-top">
+          <h3>Detalle de Entrega Local #{{ view.id }}</h3>
+          <button class="btn-close" (click)="cerrarDetalle()">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="meta-row">
+            <span><strong>Curso:</strong> {{ view.curso }}</span>
+            <span><strong>Estado:</strong> <span class="badge badge-pending">{{ view.estadoSincronizacion }}</span></span>
+          </div>
+          <div class="meta-row">
+            <span><strong>Tarea Relacionada:</strong> {{ view.tituloTarea }}</span>
+            <span><strong>ID Tarea:</strong> {{ view.tareaId }}</span>
+          </div>
+          <div class="meta-row">
+            <span><strong>Fecha de Registro:</strong> {{ view.fechaRegistro | date:'medium' }}</span>
+            <span><strong>Intentos de Envío:</strong> {{ view.intentosSincronizacion }}</span>
+          </div>
+          <hr />
+          <h4>Comentario de la entrega:</h4>
+          <blockquote class="view-comment">{{ view.comentario }}</blockquote>
+
+          <h4>Archivo adjunto:</h4>
+          <p>📁 <code>{{ view.nombreArchivo || 'solucion_practica_senati.zip' }}</code></p>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" (click)="cerrarDetalle()">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  }
+</div>

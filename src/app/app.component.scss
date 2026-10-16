@@ -1,0 +1,313 @@
+.taskhub-app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f4f8;
+  color: #1e293b;
+}
+
+.taskhub-top-header {
+  background: linear-gradient(135deg, #002d54 0%, #004b87 100%);
+  color: #ffffff;
+  padding: 1.25rem 1.75rem 0.75rem 1.75rem;
+  box-shadow: 0 4px 15px rgba(0, 45, 84, 0.25);
+
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .senati-logo-badge {
+        background: #ffffff;
+        color: #004b87;
+        font-weight: 900;
+        font-size: 1.25rem;
+        padding: 0.4rem 0.9rem;
+        border-radius: 6px;
+        letter-spacing: 1px;
+      }
+
+      .brand-titles {
+        display: flex;
+        flex-direction: column;
+
+        h1 {
+          margin: 0;
+          font-size: 1.45rem;
+          font-weight: 800;
+          color: #ffffff;
+        }
+
+        .motto {
+          font-size: 0.8rem;
+          color: #7dd3fc;
+        }
+      }
+    }
+
+    .brand-right {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      flex-wrap: wrap;
+
+      .pwa-badge {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: rgba(255, 255, 255, 0.12);
+        padding: 0.35rem 0.75rem;
+        border-radius: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        .pwa-icon {
+          font-size: 1.1rem;
+        }
+
+        .pwa-text {
+          display: flex;
+          flex-direction: column;
+          line-height: 1.1;
+
+          strong {
+            font-size: 0.82rem;
+            color: #7dd3fc;
+          }
+
+          span {
+            font-size: 0.68rem;
+            color: #e2e8f0;
+          }
+        }
+      }
+
+      .slogan-badge {
+        font-size: 0.78rem;
+        color: #e0f2fe;
+        font-style: italic;
+        background: rgba(0, 0, 0, 0.2);
+        padding: 0.35rem 0.75rem;
+        border-radius: 12px;
+      }
+
+      .conn-indicator {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.35rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+
+        .dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+        }
+
+        &.online {
+          background: rgba(34, 197, 94, 0.2);
+          color: #86efac;
+          border: 1px solid rgba(134, 239, 172, 0.4);
+          .dot {
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+          }
+        }
+
+        &.offline {
+          background: rgba(239, 68, 68, 0.25);
+          color: #fca5a5;
+          border: 1px solid rgba(252, 165, 165, 0.4);
+          .dot {
+            background: #ef4444;
+            box-shadow: 0 0 6px #ef4444;
+          }
+        }
+      }
+    }
+  }
+
+  .welcome-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.25rem;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 1.25rem;
+    margin-bottom: 1.25rem;
+
+    .greeting-text {
+      h2 {
+        margin: 0 0 0.3rem 0;
+        font-size: 1.35rem;
+        color: #ffffff;
+      }
+
+      p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: #bae6fd;
+      }
+    }
+
+    .metrics-container {
+      display: flex;
+      gap: 0.75rem;
+
+      .metric-card {
+        padding: 0.65rem 1rem;
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 90px;
+
+        .metric-val {
+          font-size: 1.5rem;
+          font-weight: 900;
+        }
+
+        .metric-desc {
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.5px;
+        }
+
+        &.card-blue {
+          background: #0284c7;
+          color: #ffffff;
+        }
+
+        &.card-green {
+          background: #16a34a;
+          color: #ffffff;
+        }
+
+        &.card-purple {
+          background: #7c3aed;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+
+  .offline-banner {
+    background: #ef4444;
+    border-radius: 8px;
+    padding: 0.85rem 1.15rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.85rem;
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+
+    .icon {
+      font-size: 1.6rem;
+    }
+
+    .txt {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .btn-goto-bandeja {
+      background: #ffffff;
+      color: #b91c1c;
+      border: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+
+      &:hover {
+        background: #fee2e2;
+      }
+    }
+  }
+
+  .taskhub-tabs-nav {
+    display: flex;
+    gap: 0.5rem;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 0.4rem;
+    border-radius: 10px;
+
+    .tab-btn {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      background: transparent;
+      border: none;
+      color: #bae6fd;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ffffff;
+      }
+
+      &.active {
+        background: #ffffff;
+        color: #004b87;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      }
+
+      .indicator-dot {
+        color: #0284c7;
+        font-size: 0.7rem;
+      }
+    }
+  }
+}
+
+.taskhub-main-body {
+  max-width: 1200px;
+  width: calc(100% - 2rem);
+  margin: 1.5rem auto 2.5rem auto;
+  flex: 1;
+}
+
+.taskhub-footer {
+  background: #00223f;
+  color: #94a3b8;
+  text-align: center;
+  padding: 1.25rem 1rem;
+  font-size: 0.82rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  p {
+    margin: 0.2rem 0;
+  }
+
+  .foot-sub {
+    color: #7dd3fc;
+    font-size: 0.78rem;
+  }
+}

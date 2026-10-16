@@ -1,0 +1,94 @@
+<div class="formulario-container">
+  <div class="form-header">
+    <h2>✍️ Formulario de Entrega de Tarea</h2>
+    <p class="subtitle">Registra tu solución técnica. Si no tienes conexión a internet, se guardará en tu dispositivo hasta que la sincronices.</p>
+  </div>
+
+  <!-- Mensajes de Validación y Éxito -->
+  @if (errorValidacion()) {
+    <div class="alert alert-danger">
+      <div class="alert-icon">⚠️</div>
+      <div class="alert-body">
+        <strong>Validación obligatoria (TH-02):</strong>
+        <p>{{ errorValidacion() }}</p>
+      </div>
+    </div>
+  }
+
+  @if (mensajeExito()) {
+    <div class="alert alert-success">
+      <div class="alert-icon">💾</div>
+      <div class="alert-body">
+        <strong>¡Persistencia Local Confirmada (TH-03 / TH-04)!</strong>
+        <p>{{ mensajeExito() }}</p>
+      </div>
+    </div>
+  }
+
+  <!-- Tarea Seleccionada -->
+  @if (tareaService.tareaSeleccionada(); as sel) {
+    <div class="selected-task-card">
+      <div class="card-head">
+        <span class="tag-course">{{ sel.curso }}</span>
+        <button class="btn-change-task" (click)="cancelar()">Cambiar tarea ✕</button>
+      </div>
+      <h3 class="task-name">{{ sel.titulo }}</h3>
+      <p class="task-info">
+        <span>📅 <strong>Límite:</strong> {{ sel.fechaEntrega }}</span>
+        <span>👨‍🏫 <strong>Docente:</strong> {{ sel.instructor }}</span>
+      </p>
+    </div>
+
+    <!-- Formulario de Redacción -->
+    <div class="form-box">
+      <div class="mock-upload-area">
+        <div class="upload-icon">📂</div>
+        <div class="upload-info">
+          <strong>Archivo adjunto preparado:</strong>
+          <code>{{ nombreArchivoAdjunto }}</code>
+          <span class="upload-hint">(Simulado para entrega académica local)</span>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label for="comentarioInput">
+          Comentario o Explicación de la Entrega <span class="required">* (Obligatorio)</span>:
+        </label>
+        <textarea
+          id="comentarioInput"
+          rows="5"
+          placeholder="Escribe aquí los detalles de la solución, evidencias o notas para el instructor..."
+          [(ngModel)]="comentario"
+          name="comentario"
+          required>
+        </textarea>
+        <span class="field-hint">No dejes este campo vacío. Es requerido para registrar la entrega.</span>
+      </div>
+
+      <div class="offline-note" [class.offline]="!conectividadService.isOnline()">
+        <span class="dot"></span>
+        <span>
+          {{ conectividadService.isOnline()
+            ? 'Conectado a Internet: Al guardar, quedará registrado localmente y listo para sincronizar.'
+            : 'Sin conexión (Offline): Tu entrega quedará segura en IndexedDB y se conservará al recargar.' }}
+        </span>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-cancel" (click)="cancelar()">Cancelar</button>
+        <button
+          class="btn-submit"
+          [disabled]="guardando()"
+          (click)="enviarEntrega()">
+          {{ guardando() ? 'Guardando en IndexedDB...' : '💾 Guardar Entrega Localmente' }}
+        </button>
+      </div>
+    </div>
+  } @else {
+    <div class="no-selection-box">
+      <div class="no-sel-icon">📌</div>
+      <h3>No has seleccionado ninguna tarea académica</h3>
+      <p>Ve a la pestaña <strong>"Tareas Disponibles"</strong> y pulsa el botón <em>"Seleccionar para Entrega"</em> en la tarea que deseas enviar.</p>
+    </div>
+  }
+</div>
